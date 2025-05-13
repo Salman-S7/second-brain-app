@@ -38,5 +38,5 @@ const linkSchema = new mongoose_1.Schema({
     hash: { type: String, required: true },
     userId: { type: mongoose_1.default.Types.ObjectId, ref: "User", required: true },
 });
-const Link = new mongoose_1.Model("Link", linkSchema);
+const Link = mongoose_1.default.model("Link", linkSchema);
 exports.default = Link;

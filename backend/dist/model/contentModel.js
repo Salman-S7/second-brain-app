@@ -41,5 +41,5 @@ const contentSchema = new mongoose_1.Schema({
     tags: [{ type: mongoose_1.default.Types.ObjectId, ref: "Tag" }],
     userId: { type: mongoose_1.default.Types.ObjectId, ref: "User", required: true },
 });
-const Content = new mongoose_1.Model("Content", contentSchema);
+const Content = mongoose_1.default.model("Content", contentSchema);
 exports.default = Content;

@@ -8,6 +8,6 @@ const contentSchema = new Schema({
   userId: { type: mongoose.Types.ObjectId, ref: "User", required: true },
 });
 
-const Content = new Model("Content", contentSchema);
+const Content = mongoose.model("Content", contentSchema);
 
 export default Content;

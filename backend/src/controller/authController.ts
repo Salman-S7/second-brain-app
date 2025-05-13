@@ -3,7 +3,6 @@ import User from "../model/userModel";
 import jwt from "jsonwebtoken";
 
 export const signup = async (req: Request, res: Response) => {
-  console.log("Tryin to signup");
   const { userName, password } = req.body;
 
   if (!userName || !password) {
@@ -11,20 +10,27 @@ export const signup = async (req: Request, res: Response) => {
     return;
   }
 
-  const user = await User.findOne({ userName });
-
-  if (user) {
-    return res.status(403).json({ message: "User already exists" });
-  }
-
   try {
-    const savedUser = await User.save({userName, password})
-    if(savedUser){
-        const jwt
-    }
-  
-  } catch (error) {
-    res..status(500).json({message : "Interval server error"})
-  }
+    const user = await User.findOne({ userName });
 
+    if (user) {
+      res.status(403).json({ message: "User already exists" });
+      return;
+    }
+
+    const newUser = new User({ userName, password });
+
+    const savedUser = await newUser.save({ userName, password });
+    if (savedUser) {
+      const jwtToken = jwt.sign(
+        savedUser._id,
+        process.env.JWT_SECRET || "JWTS#CR#!"
+      );
+      res.status(201).json({ message: "Sugnup succesfully", toket: jwtToken });
+      return;
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Interval server error" });
+    return;
+  }
 };

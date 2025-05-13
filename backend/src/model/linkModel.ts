@@ -5,9 +5,6 @@ const linkSchema = new Schema({
   userId: { type: mongoose.Types.ObjectId, ref: "User", required: true },
 });
 
-const Link = new Model("Link", linkSchema);
-
-
-
+const Link = mongoose.model("Link", linkSchema);
 
 export default Link;
