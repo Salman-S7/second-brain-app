@@ -20,7 +20,7 @@ export const signup = async (req: Request, res: Response) => {
 
     const newUser = new User({ userName, password });
 
-    const savedUser = await newUser.save({ userName, password });
+    const savedUser = await newUser.save();
     if (savedUser) {
       const jwtToken = jwt.sign(
         savedUser._id,
