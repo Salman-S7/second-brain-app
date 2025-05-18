@@ -97,7 +97,7 @@ export const deleteContent = async (req: AuthRequest, res: Response) => {
   try {
     const deletedContent = await Content.findByIdAndDelete({ _id: contentId });
 
-    if (!deleteContent) {
+    if (!deletedContent) {
       res.status(404).json({ message: "Content with given id does'nt exists" });
     }
 
@@ -107,3 +107,5 @@ export const deleteContent = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
