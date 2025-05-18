@@ -22,10 +22,7 @@ export const addContent = async (req: AuthRequest, res: Response) => {
       const savedTag = await newTag.save();
 
       const existingContent = await Content.findOne({
-        type,
         link,
-        title,
-        tags: savedTag,
         userId,
       });
 
@@ -88,6 +85,25 @@ export const getContent = async (req: AuthRequest, res: Response) => {
     res.status(200).json({ content: data });
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const deleteContent = async (req: AuthRequest, res: Response) => {
+  const userId = req.userId;
+
+  const contentId = req.params.id;
+
+  try {
+    const deletedContent = await Content.findByIdAndDelete({ _id: contentId });
+
+    if (!deleteContent) {
+      res.status(404).json({ message: "Content with given id does'nt exists" });
+    }
+
+    res.status(200).json({ message: "Content deleted" });
+  } catch (error) {
+    console.log("Something went wrong in deleteContent");
     res.status(500).json({ message: "Internal server error" });
   }
 };
