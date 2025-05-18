@@ -1,7 +1,9 @@
-import { Response } from "express";
+import { Response, Request } from "express";
 import { AuthRequest } from "../middleware/authMiddleware";
 import Content from "../model/contentModel";
 import Tag from "../model/tagModel";
+import bcrypt from "bcrypt";
+import Link from "../model/linkModel";
 
 export const addContent = async (req: AuthRequest, res: Response) => {
   const { type, link, title, tags } = req.body;
@@ -108,4 +110,53 @@ export const deleteContent = async (req: AuthRequest, res: Response) => {
   }
 };
 
+export const shareContent = async (req: AuthRequest, res: Response) => {
+  const userId = req.userId;
 
+  try {
+    if (userId) {
+      const hash = await bcrypt.hash(userId.toString(), 5);
+
+      const existingLink = await Link.findOne({ userId });
+
+      if (existingLink) {
+        res.status(403).json({ message: "Content already exists" });
+        return;
+      }
+
+      const newLink = new Link({ hash, userId });
+
+      const savedLink = await newLink.save();
+
+      res.status(201).json({
+        message: "Sharable link created succesfull",
+        link: `${savedLink.hash}-${savedLink.userId}`,
+      });
+    }
+  } catch (error) {
+    console.log("error in sharing link", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getSharedContent = async (req: Request, res: Response) => {
+  const { link } = req.params;
+  const userId = link.split("-")[1];
+
+  try {
+    const isShared = await Link.findOne({ userId });
+
+    if (!isShared) {
+      res.status(400).json({ message: "Not shared" });
+      return;
+    }
+
+    const content = await Content.find({ userId });
+
+    res.status(200).json(content);
+  } catch (error) {
+    console.log("Error in getSharedContnt", error);
+
+    res.status(500).json({ message: "Internal server error" });
+  }
+};

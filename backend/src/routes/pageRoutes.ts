@@ -4,6 +4,8 @@ import {
   addContent,
   deleteContent,
   getContent,
+  getSharedContent,
+  shareContent,
 } from "../controller/crudController";
 import { authMiddleWare } from "../middleware/authMiddleware";
 
@@ -14,5 +16,7 @@ router.post("/login", login);
 router.post("/content", authMiddleWare, addContent);
 router.get("/content", authMiddleWare, getContent);
 router.delete("/content/:id", authMiddleWare, deleteContent);
+router.post("/content/share/", authMiddleWare, shareContent);
+router.get("/shared/:link", getSharedContent);
 
 export default router;
